@@ -6,6 +6,8 @@ Created on Wed Dec  6 11:25:47 2017
 @author: macgx
 """
 
+#hey whats up
+
 import time
 from datetime import date, datetime
 from igraph import *
@@ -33,7 +35,7 @@ with open("../small_flixster_data/actionlog.txt", "w") as fout_action:
     for line in train_actions:
         if line[2] > 1000000000:
             fout_action.write("%d %d %d\n" % (line[0], line[1], line[2]))
-            
+
 print("Writing action_ids_in_testset...")
 with open("../small_flixster_data/actions_in_testing.txt", "w") as fout_actionid_test:
     movie_id_test = set()
@@ -51,20 +53,20 @@ with open("../small_flixster_data/actions_in_training.txt", "w") as fout_actioni
         movie_id_train.add(line[1])
     for id in movie_id_train:
         fout_actionid_train.write("%d\n" % id)
-        
 
-      
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 #
