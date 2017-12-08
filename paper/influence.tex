@@ -1,0 +1,156 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Social Network Analysis for Computer Scientists
+% Course paper template (modified version of ACM Proceedings template)
+% Frank W. Takes (ftakes@liacs.nl)
+% http://liacs.leidenuniv.nl/~takesfw/SNACS
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% THIS IS SIGPROC-SP.TEX - VERSION 3.1
+% WORKS WITH V3.2SP OF ACM_PROC_ARTICLE-SP.CLS
+% APRIL 2009
+%
+% It is an example file showing how to use the 'acm_proc_article-sp.cls' V3.2SP
+% LaTeX2e document class file for Conference Proceedings submissions.
+% ----------------------------------------------------------------------------------------------------------------
+% This .tex file (and associated .cls V3.2SP) *DOES NOT* produce:
+%       1) The Permission Statement
+%       2) The Conference (location) Info information
+%       3) The Copyright Line with ACM data
+%       4) Page numbering
+% ---------------------------------------------------------------------------------------------------------------
+% It is an example which *does* use the .bib file (from which the .bbl file
+% is produced).
+% REMEMBER HOWEVER: After having produced the .bbl file,
+% and prior to final submission,
+% you need to 'insert'  your .bbl file into your source .tex file so as to provide
+% ONE 'self-contained' source file.
+%
+% For tracking purposes - this is V3.1SP - APRIL 2009
+
+\documentclass{acm_proc_article-sp}
+
+\usepackage{url}
+\usepackage[utf8x]{inputenc}
+
+\begin{document}
+
+\title{Data-driven social influence maximization for modern social networks}
+\subtitle{Social Network Analysis for Computer Scientists --- Course Project Paper}
+
+\numberofauthors{2} %  in this sample file, there are a *total*
+% of EIGHT authors. SIX appear on the 'first-page' (for formatting
+% reasons) and the remaining two appear in the \additionalauthors section.
+%
+\author{
+% You can go ahead and credit any number of authors here,
+% e.g. one 'row of three' or two rows (consisting of one row of three
+% and a second row of one, two or three).
+%
+% The command \alignauthor (no curly braces needed) should
+% precede each author name, affiliation/snail-mail address and
+% e-mail address. Additionally, tag each line of
+% affiliation/address with \affaddr, and tag the
+% e-mail address with \email.
+%
+% 1st. author
+\alignauthor
+	Steinar Bragi Sigurðarson\\
+	\affaddr{LIACS, Leiden University}\\
+	\email{s.b.sigurdarson@umail.leidenuniv.nl}
+% 2nd. author
+\alignauthor
+	Xin Guo\\
+	\affaddr{LIACS, Leiden University}\\
+	\email{sXXXXX@umail.leidenuniv.nl}
+}
+
+\permission{This paper is the result of a student course project, and is based on methods and techniques suggested in \cite{goyal:datainfluence, kempe:maxspread, singer:winfriends,DBLP:journals/corr/HeK16}.  % NOTE for SNACS: replace these citations with the papers you studied!
+Permission to make digital or hard copies of all or part of this work for personal or classroom use is granted without fee provided that copies are not made or distributed for profit or commercial advantage and that copies bear this notice on the first page. }
+\conferenceinfo{SNACS '17}{Social Network Analysis for Computer Scientists, Master CS, Leiden University (\url{liacs.leidenuniv.nl/~takesfw/SNACS}).}
+
+\date{}
+% Just remember to make sure that the TOTAL number of authors
+% is the number that will appear on the first page PLUS the
+% number that will appear in the \additionalauthors section.
+
+\maketitle
+\begin{abstract}
+Influence maximization is the problem of finding... \textit{write this last}
+\end{abstract}
+
+% A category with the (minimum) three required fields
+\category{H.4}{Information Systems}{Social Networks} \\
+%A category including the fourth, optional field follows...
+\category{D.2.8}{Software Engineering}{Metrics}[complexity measures, performance measures]
+
+\terms{Theory}
+
+\keywords{Social Networks, Data Mining, Influence, Spread} % NOT required for Proceedings
+
+\section{Introduction}
+Influence Maximization is a problem that has been studied thoroughly over the years and dates back further than our earliest online social networks. Ever since humans started connecting with each other through the Internet, there have been people who have been interested in the potential value of being able to reach and influence as many users in a network as possible with the least amount of effort, resources and complexity. During the early days of influence spread research, spread maximization was achieved by analyzing centrality measures in relatively small social graphs. Later, during the widespread adoption of online social networks the motivation for this started revolving around viral marketing, wanting to initiate and maximize the reach of word-of-mouth advertising campaigns. Since then, social networks have changed and grown tremendously as more and more people adopt these novel efficient means of communication. Recently it has become more apparent that entities might be using this type of knowledge to influence communities for other purposes than viral advertising. Foreign powers might want to affect outcomes of elections in other countries for economic or political gain by targeting users with tailored news articles in order to influence to tone of widespread debate and discussion. \textit{(There is evidence to suggest that this might have happened during the last presidential elections in the United States)}. Increasingly, the companies behind the social networks we use, are collecting an ever larger amount of behavioral information. This information can be used to predict the behaviour of nodes and target potential influential users with tailored content.
+
+\subsection{Using available data to predict\\ influenceability}
+Social graphs are growing at such a rate, that the early methods of finding seed nodes are becoming increasingly unrealistic. They relied on computationally expensive probabilistic simulations to estimate the influence-ability of nodes in order to build sets of seed nodes. They ignore potential beneficial factors that could be considered when selecting nodes. Later studies introduced methods to exploit previous propagation traces to evaluate the influenceability of nodes, avoiding the need for guesswork and costly simulations.\cite{goyal:datainfluence} They distribute credit to potential influencers of nodes and give them a score, their probability of influence. These methods proved to be vastly superior, more efficient and scalable than previous techniques according to their experiments. Some of the most recent work, such as [Robust influence maximization, Xinran He, David Kempe 2016], suggested that we should consider even more diverse behavioural and environmental data to predict influence. We could find nodes to spread certain topics based on their interests, political leanings and opinions. In their paper they experimented with various data sets to try to identify a set of k nodes who are simultaneously influential for multiple functions or models.
+
+\subsection{External factors}
+The potential for a propagation between nodes might expire over time. Therefore, time of day might affect the likelihood of a propagation happening. We are less likely to share, retweet at a time of day when we are usually asleep. Can worldwide or local current events affect our influenceability? How can we measure the impact of external factors? Are incentive based mechanisms such as financial compensation a viable ingredient to increase the influenceability of certain nodes? [Cite Singer]
+
+\section{Related and previous work}
+
+In all of the research we have studied, the optimization problems have been focused on finding an initial set of “seed” nodes which would maximize the influenceability through a network. \\
+
+
+In 2003, a time before Facebook and Twitter, Kempe et al. \cite{kempe:maxspread}, suggested probabilistic simulation oriented approaches to select an initial set of seed nodes to maximize spread and cause a cascade effect through a network. They compared their novel techniques with older models and proved with various experiments that their methods outperform those which were based on classic graph measures such as degree centrality and distance centrality. Their focus was on Independent Cascade and Linear Threshold Models.
+\textbf{TODO: Briefly explain the IC and LT models here}
+
+Yaron Singer \cite{singer:winfriends} focused on economic sides of the problem. He studied and proposed mechanisms to increase the influence-ability of users by compensating them financially, to create incentives and reward users for spreading information.
+
+In 2016, Xinran He and Kempe \cite{DBLP:journals/corr/HeK16} proposed using multiple models simultaneously to predict influence spread. They argued that what defines a “social tie” can in many cases be fuzzy and unclear. They also argued that human behaviour is typically influenced by many environmental variables, such as interests and opinions matching a particular topic to be spread. Based on the assumption that multiple factors can affect the influence-ability of nodes, they designed an algorithm that finds nodes that are simultaneously influential for multiple functions. Their experiments showed that combining models improved the accuracy of spread prediction. Their research was funded by the U.S. Defence Advanced Research Projects Agency, (DARPA) under Social Media in Strategic Communication (SMISC) program.
+
+
+Goyal et Al \cite{goyal:datainfluence} proposed a novel approach in 2012. They argued that using probabilistic Monte Carlo simulations to scan a network for potential seed nodes isn't scalable for real world large networks. Their novel approach was to scan and exploit an Action Log, a log containing previous propagation traces and use those to distribute credit (influence probability score) throughout the network, avoiding the need for costly simulations. This is the approach we will be focusing on in this paper.
+
+
+\section{Problem Statement}
+
+Our main goal, like others before us is to find a k set of seed nodes that maximizes influence spread through a social network. The credit distribution model from Goyal et al has been proven to be a more scalable, efficient and accurate model than IC and LT. Our contribution will be to compare the performance of the credit distribution model using multiple social graphs with varying structure and nature. The purpose is to gain insight and describe the properties of an optimal dataset for which this approach is the most suitable.
+
+\subsection{Credit distribution}
+
+The process starts with the (unweighted) social graph and a log of past action propagations that say when each user performed an action. If we take a social music streaming service as an example, the log might contain recorded actions such as listening to a song. If a user listens to a song, and his friend later listens to the same song, we can consider the action to have propagated from the first user to his friend. The log is used to estimate influence probabilities among the nodes. This produces the directed edge-weighted graph which is then given as input to the greedy algorithm which produces the seed set. They look at potential influencers for actions performed by each node and distribute credit evenly between nodes who previously performed the same action. Nodes can influence other nodes indirectly. The total propagation score for a pair of nodes is the sum of direct and indirect influence scores.
+
+\subsection{Analyzing the characteristics of a social graph}
+
+
+\section{Suggested Approaches and Algorithms}
+\textbf{TODO: briefly describe the credit distribution algorithms from the Data-Based paper \cite{goyal:datainfluence}.
+We should also mention the custom pre-processing scripts we implemented to extract action logs from our social interaction graphs to produce the edge weighted graphs. One tricky part will be to split the data sets into training and testing. It's mentioned in \cite{goyal:datainfluence} that we use the training set to learn edge probabilities, which means it's crucial that the splitting of the sets is performed in such a way that each propagation trace in it's entirety falls into the training or test set.}
+
+
+\section{Datasets}
+\textbf{TODO: Describe the studied social graphs and observe their different characteristics}
+
+\section{Experiments and results}
+\textbf{TODO: Compare the performance of the credit distribution model with the different datasets}
+
+\section{Conclusions}
+
+%\end{document}  % This is where a 'short' article might terminate
+
+%
+% The following two commands are all you need in the
+% initial runs of your .tex file to
+% produce the bibliography for the citations in your paper.
+\bibliographystyle{abbrv}
+\bibliography{influence.bib}  % sigproc.bib is the name of the Bibliography in this case
+% You must have a proper ".bib" file
+%  and remember to run:
+% latex bibtex latex latex
+% to resolve all references
+%
+% ACM needs 'a single self-contained file'!
+
+\balancecolumns
+% That's all folks!
+\end{document}
