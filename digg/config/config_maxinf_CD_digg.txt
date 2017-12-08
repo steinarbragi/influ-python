@@ -1,0 +1,14 @@
+# Config file for seed selection for influence maximization under Credit
+# Distribution Model
+
+phase : 12
+
+graphFile : sample_dataset/training/scan2/edgesCounts.txt
+actionsFile : sample_dataset/action_log_digg.txt
+userInflFile : sample_dataset/training/scan2/usersCounts.txt
+
+outdir : sample_dataset/maxinf_CD
+maxTuples : 0
+trainingActionsFile : sample_dataset/action_ids.txt
+truncation_threshold : 0.001
+budget : 50
