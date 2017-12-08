@@ -1,3 +1,11 @@
 *.csv
 flixster_data/
 .DS_store
+/paper/influence.aux
+/paper/influence.bbl
+/paper/influence.blg
+/paper/influence.fdb_latexmk
+/paper/influence.fls
+/paper/influence.log
+/paper/influence.pdf
+/paper/influence.synctex.gz
