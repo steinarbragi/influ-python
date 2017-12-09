@@ -4,7 +4,7 @@ phase : 1
 computeUserInf : 1
 
 training_dir : sample_dataset/training/scan1
-actionsFile : sample_dataset/action_log_train.txt
+actionsFile : sample_dataset/action_logs_train.txt
 
 outdir : sample_dataset/training/scan2
 maxTuples : 0
