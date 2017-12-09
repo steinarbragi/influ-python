@@ -1,14 +1,16 @@
 #!/usr/bin/env python
 import csv
 import sys
+from sklearn.model_selection import train_test_split
+
 
 # input: digg_friends.csv
 # output grpah.txt
 
 print("digg_friends.csv -> graph.txt")
-fin_link = open('raw/digg_friends.csv')
-fout_graph = open("learn/graph_dir.txt", "w")
-fout_graph_un = open("learn/graph_undir.txt", "w")
+fin_link = open('digg/raw/digg_friends.csv')
+fout_graph = open("digg/learn/graph_dir.txt", "w")
+fout_graph_un = open("digg/learn/graph_undir.txt", "w")
 user_set = set()
 num_edges = 0
 for row in csv.reader(fin_link):
@@ -34,7 +36,7 @@ print("Number of directed edges: ", num_edges)
 # input: votes.timed.txt
 # output: action_logs.txt
 print("digg_votes1.csv -> action_logs.txt")
-fin_vote = open("raw/digg_votes1.csv", "r")
+fin_vote = open("digg/raw/digg_votes1.csv", "r")
 story_set = set()
 action_logs = []
 user_set = set()
@@ -52,17 +54,44 @@ print("Number of action logs: ", len(action_logs))
 print("Number of stories: ", len(story_set))
 print("Number of users voted: ", len(user_set))
 
-# Sort action logs and output
-print("Sorting action_logs...")
-action_logs = sorted(action_logs, key = lambda t:(t[1],t[0],t[2]))
-print("Writing action_logs...")
-fout_action = open("learn/action_logs.txt", "w")
-for line in action_logs:
-    fout_action.write("%s %s %s\n" % (line[0], line[1], line[2]))
-fout_action.close()
 
-# Output all action-ids
-fout_actionid = open("learn/action_ids.txt", "w")
-for id in story_set:
+train_actions, test_actions = train_test_split(action_logs, test_size=0.2)
+
+story_set_train = set()
+story_set_test = set()
+
+for line in train_actions:
+    story_set_train.add(line[1])
+
+for line in test_actions:
+    story_set_test.add(line[1])
+
+# Sort action logs and output
+print("Sorting train_action_logs...")
+action_logs = sorted(train_actions, key = lambda t:(t[1],t[0],t[2]))
+
+print("Writing action_logs_train...")
+fout_action_train = open("digg/learn/action_logs_train.txt", "w")
+for line in train_actions:
+    fout_action_train.write("%s %s %s\n" % (line[0], line[1], line[2]))
+fout_action_train.close()
+
+print("Writing action_logs_test...")
+fout_action_test = open("digg/learn/action_logs_test.txt", "w")
+for line in test_actions:
+    fout_action_test.write("%s %s %s\n" % (line[0], line[1], line[2]))
+fout_action_test.close()
+
+
+# Output all train action-ids
+fout_actionid = open("digg/learn/action_ids_train.txt", "w")
+for id in story_set_train:
+    fout_actionid.write("%s\n" % id)
+fout_actionid.close()
+
+
+# Output all test action-ids
+fout_actionid = open("digg/learn/action_ids_test.txt", "w")
+for id in story_set_test:
     fout_actionid.write("%s\n" % id)
 fout_actionid.close()
