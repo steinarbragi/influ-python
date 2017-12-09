@@ -55,43 +55,46 @@ print("Number of stories: ", len(story_set))
 print("Number of users voted: ", len(user_set))
 
 
-train_actions, test_actions = train_test_split(action_logs, test_size=0.2)
+#train_actions, test_actions = train_test_split(action_logs, test_size=0.2)
 
-story_set_train = set()
-story_set_test = set()
+# %% split story sets into test and train
+train_story_set, test_story_set = train_test_split(list(story_set), test_size=0.2)
 
-for line in train_actions:
-    story_set_train.add(line[1])
+story_set_train = set(train_story_set)
+story_set_test = set(test_story_set)
 
-for line in test_actions:
-    story_set_test.add(line[1])
+print(len(story_set_train))
+print(len(story_set_test))
 
-# Sort action logs and output
-print("Sorting train_action_logs...")
-action_logs = sorted(train_actions, key = lambda t:(t[1],t[0],t[2]))
 
-print("Writing action_logs_train...")
-fout_action_train = open("digg/learn/action_logs_train.txt", "w")
-for line in train_actions:
-    fout_action_train.write("%s %s %s\n" % (line[0], line[1], line[2]))
+
+# %% Save data into test and training
+
+print("Sorting action_logs...")
+action_logs = sorted(action_logs, key = lambda t:(t[1],t[0],t[2]))
+print("Writing action_logs...")
+fout_action_test = open("digg/learn/action_logs_test.txt", "w")
+fout_action_train = open("digg/learn/action_logs_test.txt", "w")
+for line in action_logs:
+    if(line[1] in story_set_train):
+        fout_action_train.write("%s %s %s\n" % (line[0], line[1], line[2]))
+    elif(line[1] in story_set_test):
+        fout_action_test.write("%s %s %s\n" % (line[0], line[1], line[2]))
+fout_action_test.close()
 fout_action_train.close()
 
-print("Writing action_logs_test...")
-fout_action_test = open("digg/learn/action_logs_test.txt", "w")
-for line in test_actions:
-    fout_action_test.write("%s %s %s\n" % (line[0], line[1], line[2]))
-fout_action_test.close()
-
-
-# Output all train action-ids
+# Output all train action-ids train
 fout_actionid = open("digg/learn/action_ids_train.txt", "w")
 for id in story_set_train:
     fout_actionid.write("%s\n" % id)
 fout_actionid.close()
 
-
-# Output all test action-ids
+# Output all test action-ids train
 fout_actionid = open("digg/learn/action_ids_test.txt", "w")
 for id in story_set_test:
     fout_actionid.write("%s\n" % id)
 fout_actionid.close()
+
+
+# %%
+print (len(train_actions))
