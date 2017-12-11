@@ -95,8 +95,9 @@ Influence Maximization is a problem that has been studied thoroughly over the ye
 \subsection{Using available data to predict\\ influenceability}
 Social graphs are growing at such a rate, that the early methods of finding seed nodes are becoming increasingly unrealistic. They relied on computationally expensive probabilistic simulations to estimate the influence-ability of nodes in order to build sets of seed nodes. They ignore potential beneficial factors that could be considered when selecting nodes. Later studies introduced methods to exploit previous propagation traces to evaluate the influenceability of nodes, avoiding the need for guesswork and costly simulations.\cite{goyal:datainfluence} They distribute credit to potential influencers of nodes and give them a score, their probability of influence. These methods proved to be vastly superior, more efficient and scalable than previous techniques according to their experiments. Some of the most recent work, such as [Robust influence maximization, Xinran He, David Kempe 2016], suggested that we should consider even more diverse behavioural and environmental data to predict influence. We could find nodes to spread certain topics based on their interests, political leanings and opinions. In their paper they experimented with various data sets to try to identify a set of k nodes who are simultaneously influential for multiple functions or models.
 
-\subsection{External factors}
-The potential for a propagation between nodes might expire over time. Therefore, time of day might affect the likelihood of a propagation happening. We are less likely to share, retweet at a time of day when we are usually asleep. Can worldwide or local current events affect our influenceability? How can we measure the impact of external factors? Are incentive based mechanisms such as financial compensation a viable ingredient to increase the influenceability of certain nodes? [Cite Singer]
+\subsection{The different nature of social graphs}
+
+Social networks vary in structure and have diffrent characteristics because they serve different purposes. The behaviour of users will vary accross networks. Many of us are regular users of multiple social networks. On facebook we might be discussing and chatting with a fairly narrow group of reasonably close friends while we might choose to follow complete strangers and celebrities on twitter based on their interests and opinions. The way we interact with people will vary in different contexts. The way this information is presented also affects our behavior. The algorithms that curate the news feeds of these various networks all have their own characteristics. This affects what we will see, along with our options for reacting to the data we are presented with. We assume that these differences may affect the way information spreads.
 
 \section{Related and previous work}
 
@@ -123,8 +124,6 @@ Goyal et Al \cite{goyal:datainfluence} proposed a novel approach in 2012. They a
 			$G$ & A Directed Graph, $G = (V,E)$ \\\hline
 			$V$ & Nodes, $V = \{u,v,w,x,...\}$ \\\hline
 			$E$ & Edges, $E = \{(u, v),(w, v),(v,w),...\}$ \\\hline
-			$\mathbb{L}$ & Action log \\\hline
-			$S$ & Seed set of influencial nodes \\\hline
 
 	\end{tabulary}
 	\caption{General Graph Notation}
@@ -148,11 +147,14 @@ The seed selection process is described in detail in \cite{goyal:datainfluence}.
 \begin{figure}[h]
 	\begin{tabulary}{\linewidth}{|l|L|}
 			\hline
+			$\mathbb{L}$ & Action log \\\hline
+			$S$ & Seed set of influencial nodes \\\hline
+			$A_u$ & Total number of actions performed by node $u$ \\\hline
 			$\gamma_{v,u}(a)$ & Direct influence credit given to $v$ for influencing $u$ for action a \\\hline
 			$\Gamma_{v,u}(a)$ & Total credit given to $v$ for influencing $u$ for action $a$ \\\hline
 			$\kappa_{v,u}$ & Total credit given to v for influencing u for all actions \\\hline
 	\end{tabulary}
-	\caption{notation pt 2}
+	\caption{CD Notation from Goyal et al. \cite{goyal:datainfluence}}
 	\label{notation2}
 \end{figure}
 
@@ -161,7 +163,6 @@ The seed selection process is described in detail in \cite{goyal:datainfluence}.
 	\begin{equation}
 		\Gamma_{v,u}(a) = \displaystyle\sum_{w \in N_{in}(u,a)} \Gamma_{v,w}(a) \cdot \gamma_{w,u}(a)
 	\end{equation}
-	\caption{CD Formula from \cite{goyal:datainfluence}}
 	\label{CD-formula}
 \end{figure}
 
@@ -169,7 +170,7 @@ While scanning the graphs and action logs, the algorithms add nodes to the seed 
 
 \subsection{Aggregating over all actions and all nodes}
 
-The next question is how to aggregate the influence credit over the whole action log $\mathbb{L}$ . Consider two nodes $v$ and $u$: the total influence credit given to $v$ by $u$ for all actions in $A$, is simply obtained by taking the total credit over all actions and normalizing it by the number of actions performed by $u$ (denoted $A_u$). This is justified by the fact that credits are assigned by $u$ backward to its potential influencers. In their paper \cite{goyal:datainfluence}, Goyal et al.  defined the following formulas:
+Next, Goyal et al. described how they would aggregate the influence credit over the whole action log $\mathbb{L}$. Consider two nodes $v$ and $u$: the total influence credit given to $v$ by $u$ for all actions in $A$, is simply obtained by taking the total credit over all actions and normalizing it by the number of actions performed by $u$ (denoted $A_u$). This is justified by the fact that credits are assigned by $u$ backward to its potential influencers. In their paper \cite{goyal:datainfluence}, Goyal et al.  defined the following formulas:
 \begin{equation}
 	\kappa_{v,u} = \frac{1}{A_u} \displaystyle\sum_{a \in A} \Gamma_{u,v}(a)
 \end{equation}
@@ -184,12 +185,11 @@ The next question is how to aggregate the influence credit over the whole action
 	\sigma_{cd}(S) = \displaystyle\sum_{u\in V} \kappa_{S,u} = \displaystyle\sum_{u\in V} \frac{1}{A_u} \displaystyle\sum_{a \in A} \Gamma_{S,v}(a)
 \end{equation}
 
-This is the objective function that the algorithms in \cite{goyal:datainfluence} attempt to maximize.
-
+This is the objective function that the algorithms in \cite{goyal:datainfluence} attempt to maximize. We will be comparing the seed sets and the influence credits obtained by various datasets, described in the next chapter.
 
 \section{Datasets}
 
-In order to find out which types of graphs are the most suitable the credit distribution model, we need to study the characteristics of various social graphs and find links between their structure and the achieved spread for our seed sets of nodes. Our requirements are that each social graph needs to have an accompanying action log $\mathbb{L}$ containing previous propagation traces. We compared 4 datasets which will be described below.
+In order to find out which types of graphs are the most suitable for the credit distribution model, we need to study the characteristics of various social graphs and find links between their structure and the achieved spread for our seed sets of nodes. Our requirements are that each social graph needs to have an accompanying action log $\mathbb{L}$ containing previous propagation traces. We compared 4 datasets which will be described below.
 
 \textbf{Flickr} is a social photo sharing platform. It's underlying social network is an undirected graph. Users can follow each other and get notified of their friends submissions and activity. We used a subset of Flickr friendships as our social graph. Each action in the accompanying action log represents a user marking a photo as a favourite.
 
