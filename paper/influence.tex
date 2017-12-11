@@ -169,7 +169,7 @@ While scanning the graphs and action logs, the algorithms add nodes to the seed 
 
 \subsection{Aggregating over all actions and all nodes}
 
-The next question is how to aggregate the influence credit over the whole action log $\mathbb{L}$ . Consider two nodes $v$ and $u$: the total influence credit given to $v$ by $u$ for all actions in $A$, is simply obtained by taking the total credit over all actions and normalizing it by the number of actions performed by $u$ (denoted $A_u$). This is justified by the fact that credits are assigned by $u$ backward to its potential influencers. We define:
+The next question is how to aggregate the influence credit over the whole action log $\mathbb{L}$ . Consider two nodes $v$ and $u$: the total influence credit given to $v$ by $u$ for all actions in $A$, is simply obtained by taking the total credit over all actions and normalizing it by the number of actions performed by $u$ (denoted $A_u$). This is justified by the fact that credits are assigned by $u$ backward to its potential influencers. In their paper \cite{goyal:datainfluence}, Goyal et al.  defined the following formulas:
 \begin{equation}
 	\kappa_{v,u} = \frac{1}{A_u} \displaystyle\sum_{a \in A} \Gamma_{u,v}(a)
 \end{equation}
