@@ -77,17 +77,15 @@ Permission to make digital or hard copies of all or part of this work for person
 
 \maketitle
 \begin{abstract}
-Influence maximization is the problem of finding... \textit{write this last}
+Influence maximization is the problem of finding an optimal set of influencial nodes in a network to maximize the spread of information. Social networks have grown and evolved in recent years, and so have the methods of solving this problem. In this paper, we will discuss approaches from previous papers, while focusing on a promising data-based approach. We will compare the performance by applying it to multiple different networks and discuss the results of our experiments.
 \end{abstract}
 
 % A category with the (minimum) three required fields
-\category{H.4}{Information Systems}{Social Networks} \\
-%A category including the fourth, optional field follows...
-\category{D.2.8}{Software Engineering}{Metrics}[complexity measures, performance measures]
+\category{H.4}{Information Systems}{Social Networks}
 
 \terms{Theory}
 
-\keywords{Social Networks, Data Mining, Influence, Spread} % NOT required for Proceedings
+\keywords{Social Networks, Data Mining, Influence Spread, Credit Distribution} % NOT required for Proceedings
 
 \section{Introduction}
 Influence Maximization is a problem that has been studied thoroughly over the years and dates back further than our earliest online social networks. Ever since humans started connecting with each other through the Internet, there have been people who have been interested in the potential value of being able to reach and influence as many users in a network as possible with the least amount of effort, resources and complexity. During the early days of influence spread research, spread maximization was achieved by analyzing centrality measures in relatively small social graphs. Later, during the widespread adoption of online social networks the motivation for this started revolving around viral marketing, wanting to initiate and maximize the reach of word-of-mouth advertising campaigns. Since then, social networks have changed and grown tremendously as more and more people adopt these novel efficient means of communication. Recently it has become more apparent that entities might be using this type of knowledge to influence communities for other purposes than viral advertising. Foreign powers might want to affect outcomes of elections in other countries for economic or political gain by targeting users with tailored news articles in order to influence to tone of widespread debate and discussion. \textit{(There is evidence to suggest that this might have happened during the last presidential elections in the United States)}. Increasingly, the companies behind the social networks we use, are collecting an ever larger amount of behavioral information. This information can be used to predict the behaviour of nodes and target potential influential users with tailored content.
@@ -127,7 +125,7 @@ Goyal et Al \cite{goyal:datainfluence} proposed a novel approach in 2012. They a
 			$S$ & Seed set of influencial nodes \\\hline
 			$k$ & Number of nodes in a seed set \\\hline
 	\end{tabulary}
-	\caption{General Graph Notation}
+	\caption{Graph Notation}
 	\label{general-notation}
 \end{figure}
 
@@ -139,8 +137,7 @@ The process starts with the (unweighted) social graph and a log of past action p
 
 \section{Suggested Approaches}
 
-We want to study the structure of various datasets to find out which characteristics are important for the CD model to be successful. We will compare the performance over multiple datasets and try to describe the attributes required for successful CD based influence spread. The datasets we are studying vary in structure, and require different preprocessing approaches. One of our main challenges is the splitting of action logs $\mathbb{L}$ into meaningful training and test sets, in order to measure our accuracy in a meaningful manner. For credit distribution and spread prediction we are using the software provided in \cite{goyal:datainfluence} along with our own custom preprocessing scripts.
-After preprocessing, we use the previously mentioned software to select seed nodes. We find k seed nodes.
+We want to study the structure of various datasets to find out which characteristics are important for the CD model to be successful. We will compare the performance over multiple datasets and try to describe the attributes required for successful CD based influence spread. The datasets we are studying require different preprocessing approaches. One of our main challenges is the splitting of action logs $\mathbb{L}$ into meaningful training and test sets, in order to measure our accuracy in a meaningful manner. For credit distribution and spread prediction we are using the software provided in \cite{goyal:datainfluence} along with our own custom preprocessing scripts. After preprocessing, we use the previously mentioned software to select seed nodes, predict spread and compare with actual spread.
 
 The seed selection process is described in detail in \cite{goyal:datainfluence}. We will briefly summarize some of the the most relevant points here. For each action performed by a node \textit{u} in our action log $\mathbb{L}$, the algorithm distributes credit evenly between direct neighbours \textit{w} of \textit{u}, if they performed the same action before \textit{u}. It also distributes credit backwards to all \textit{predecessors} of \textit{u} in \textit{G} who also performed the same action. To calculate the final score for a pair they use the formula in figure ~\ref{CD-formula}. See notation in table ~\ref{notation2}.
 
@@ -191,11 +188,11 @@ This is the objective function that the algorithms in \cite{goyal:datainfluence}
 
 In order to find out which types of graphs are the most suitable for the credit distribution model, we need to study the characteristics of various social graphs and find links between their structure and the achieved spread for our seed sets of nodes. Our requirements are that each social graph needs to have an accompanying action log $\mathbb{L}$ containing previous propagation traces. We compared 4 datasets which will be described below.
 
-\textbf{Flickr} \cite{data:flickr} is a social photo sharing platform. It's underlying social network is an undirected graph. Users can follow each other and get notified of their friends submissions and activity. We used a subset of Flickr friendships as our social graph. Each action in the accompanying action log represents a user marking a photo as a favourite. \cite{data:flickr-paper}
+\textbf{Flickr} \cite{data:flickr} is a social photo sharing platform. It's underlying social network is an directed graph. Users can follow each other and get notified of their friends submissions and activity. We used a subset of Flickr friendships as our social graph. Each action in the accompanying action log represents a user marking a photo as a favourite. \cite{data:flickr-paper}
 
 \textbf{Flixster} \cite{data:flixster} is an online social movie database. Flixter's action log consists of movie ratings. We looked at the propagations of movie ratings throughout Flixter's friendship network. \cite{data:flixsterpaper}
 
-\textbf{Twitter} \cite{data:twitter} \cite{DBLP:journals/corr/abs-1202-3162}
+\textbf{Twitter} \cite{data:twitter} is a directed social network. It has gained temendous popularity and widespread adoption in recent years for its ease of use. Users follow other users and can very easily "retweet" posts with a single click. This feature makes it easy for users to share and spread content with their followers. It simplifies the process of influencing followers and we suspect it might have a big impact on the performance of credit distribution influence maximization. The front page of Twitter is generated by various algorithms which curate a news feed of potentially interesting tweets for each user based on who they follow and have interacted with in the past. Tweets can contain \textit{\#hashtags}, which represent certain topics. An example of a notable hashtag is \textit{\#metoo}, which has spread throughout the whole world in recent weeks. The hashtag and the women behind it were featured as the latest Time Magazine Person of the Year. Our action log for twitter is based on URLs that have propagated through retweets.
 
 \textbf{Digg} \cite{data:digg-friends,data:digg-votes,data:digg} TODO:describe \cite{DBLP:journals/corr/abs-1202-3162}
 
