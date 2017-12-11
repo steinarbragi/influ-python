@@ -31,6 +31,8 @@
 
 \usepackage{url}
 \usepackage[utf8x]{inputenc}
+\usepackage{tabulary}
+
 
 \begin{document}
 
@@ -114,22 +116,75 @@ Goyal et Al \cite{goyal:datainfluence} proposed a novel approach in 2012. They a
 
 \section{Problem Statement}
 
+\begin{figure}
+	\centering
+	\begin{tabulary}{\linewidth}{|l|L|}
+			\hline
+			$G$ & A Directed Graph, $G = (V,E)$ \\\hline
+			$V$ & Nodes, $V = \{u,v,w,x,...\}$ \\\hline
+			$E$ & Edges, $E = \{(u, v),(w, v),(v,w),...\}$ \\\hline
+			$\mathbb{L}$ & Action log \\\hline
+			$S$ & Seed set of influencial nodes \\\hline
+
+	\end{tabulary}
+	\caption{General Graph Notation}
+	\label{general-notation}
+\end{figure}
+
 Our main goal, like others before us is to find a k set of seed nodes that maximizes influence spread through a social network. The credit distribution model from Goyal et al has been proven to be a more scalable, efficient and accurate model than IC and LT. Our contribution will be to compare the performance of the credit distribution model using multiple social graphs with varying structure and nature. The purpose is to gain insight and describe the properties of an optimal dataset for which this approach is the most suitable.
 
 \subsection{Credit distribution}
 
 The process starts with the (unweighted) social graph and a log of past action propagations that say when each user performed an action. If we take a social music streaming service as an example, the log might contain recorded actions such as listening to a song. If a user listens to a song, and his friend later listens to the same song, we can consider the action to have propagated from the first user to his friend. The log is used to estimate influence probabilities among the nodes. This produces the directed edge-weighted graph which is then given as input to the greedy algorithm which produces the seed set. They look at potential influencers for actions performed by each node and distribute credit evenly between nodes who previously performed the same action. Nodes can influence other nodes indirectly. The total propagation score for a pair of nodes is the sum of direct and indirect influence scores.
 
-\subsection{Analyzing the characteristics of a social graph}
-
-
-\section{Suggested Approaches and Algorithms}
+\section{Suggested Approaches}
 \textbf{TODO: briefly describe the credit distribution algorithms from the Data-Based paper \cite{goyal:datainfluence}.
 We should also mention the custom pre-processing scripts we implemented to extract action logs from our social interaction graphs to produce the edge weighted graphs. One tricky part will be to split the data sets into training and testing. It's mentioned in \cite{goyal:datainfluence} that we use the training set to learn edge probabilities, which means it's crucial that the splitting of the sets is performed in such a way that each propagation trace in it's entirety falls into the training or test set.}
 
 
+We want to study the structure of various datasets to find out which characteristics are important for the CD model to be successful. We will compare the performance over multiple datasets and try to describe the attributes required for successful CD based influence spread. The datasets we are studying vary in structure, and require different preprocessing approaches. One of our main challenges is the splitting of action logs $\mathbb{L}$ into meaningful training and test sets, in order to measure our accuracy in a meaningful manner. For credit distribution and spread prediction we are using the software provided in \cite{goyal:datainfluence} along with our own custom preprocessing scripts.
+After preprocessing, we use the previously mentioned software to select seed nodes. We find k seed nodes.
+
+
+The seed selection process is described in detail in \cite{goyal:datainfluence}. We will briefly summarize the main points here. For each action performed by a node \textit{u} in our action log $\mathbb{L}$, we dirstribute credit evenly between direct neighbours \textit{w} of \textit{u}, if they performed the same action before \textit{u}. We also distribute credit backwards to all \textit{predecessors} of \textit{u} in \textit{G} who also performed the same action. To calculate the final score for a pair we use the following formula.
+
+\begin{figure}[h]
+	\begin{tabulary}{\linewidth}{|l|L|}
+			\hline
+			$\gamma_{v,u}(a)$ & Direct influence credit given to $v$ for influencing $u$ for action a \\\hline
+			$\Gamma_{v,u}(a)$ & Total credit given to $v$ for influencing $u$ for action $a$ \\
+			\hline
+	\end{tabulary}
+	\caption{notation pt 2}
+	\label{notation2}
+\end{figure}
+
+
+\begin{figure}[h]
+	\begin{equation}
+		\Gamma_{v,u}(a) = \displaystyle\sum_{w \in N_{in}(u,a)} \Gamma_{v,w}(a) \cdot \gamma_{w,u}(a)
+	\end{equation}
+	\caption{CD Formula from \cite{goyal:datainfluence}}
+	\label{CD-formula}
+\end{figure}
+
+
+
 \section{Datasets}
-\textbf{TODO: Describe the studied social graphs and observe their different characteristics}
+
+In order to find out which types of graphs are the most suitable the credit distribution model, we need to study the characteristics of various social graphs and find links between their structure and the achieved spread for our seed sets of nodes. Our requirements are that each social graph needs to have an accompanying action log of previous propagation traces. We compared 4 datasets which will be described below.
+
+\textbf{Flickr} is a social photo sharing platform. It's underlying social network is an undirected graph. Users can follow each other and get notified of their friends submissions and activity. Used a subset of Flickr friendships as our social graph, and for our action log we looked at marking a photos as a favourites.
+
+\textbf{Flixster} is an online social movie database. Flixter's action log consists of movie ratings. We looked at the propagations of movie ratings through a friendship network.
+
+\textbf{Twitter} TODO:describe \cite{DBLP:journals/corr/abs-1202-3162}
+
+\textbf{Digg} TODO:describe \cite{DBLP:journals/corr/abs-1202-3162}
+
+
+ \cite{DBLP:journals/corr/abs-1202-3162}
+
 
 \section{Experiments and results}
 \textbf{TODO: Compare the performance of the credit distribution model with the different datasets}
