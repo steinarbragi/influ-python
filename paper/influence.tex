@@ -33,6 +33,8 @@
 \usepackage[utf8x]{inputenc}
 \usepackage{tabulary}
 
+\newtheorem{lem}{Lemma}
+\newtheorem{thm}{Theorem}
 
 \begin{document}
 
@@ -102,8 +104,7 @@ Social graphs are growing at such a rate, that the early methods of finding seed
 
 In all of the research we have studied, the optimization problems have been focused on finding an initial set of “seed” nodes which would maximize the influenceability through a network. \\
 
-In 2003, a time before Facebook and Twitter, Kempe et al. \cite{kempe:maxspread}, suggested probabilistic simulation oriented approaches to select an initial set of seed nodes to maximize spread and cause a cascade effect through a network. They compared their novel techniques with older models and proved with various experiments that their methods outperform those which were based on classic graph measures such as degree centrality and distance centrality. Their focus was on Independent Cascade and Linear Threshold Models.
-\textbf{TODO: Briefly explain the IC and LT models here}
+In 2003, a time before Facebook and Twitter, Kempe et al. \cite{kempe:maxspread}, suggested probabilistic simulation oriented approaches to select an initial set of seed nodes to maximize spread and cause a cascade effect through a network. They compared their novel techniques with older models and proved with various experiments that their methods outperform those which were based on classic graph measures such as degree centrality and distance centrality. Their focus was on Independent Cascade and Linear Threshold Models.In both, at a given time, each node can be either active or inactive. Each node's tendency to become active increases monotonically as more of its neighbors become active, and an active node never becomes inactive again. Time unfolds in discrete steps.
 
 Yaron Singer \cite{singer:winfriends} focused on economic sides of the problem. He studied and proposed mechanisms to increase the influence-ability of users by compensating them financially, to create incentives and reward users for spreading information.
 
@@ -164,7 +165,7 @@ The seed selection process is described in detail in \cite{goyal:datainfluence}.
 
 While scanning the graphs and action logs, the algorithms add nodes to the seed set $S$ if they improve the total influence spread score by computing the marginal gain for each node addition. If there is no gain to adding a seed node to the set, it is discarded.
 
-\subsection{Aggregating over all actions and all nodes}
+\subsection*{Aggregating over all actions and all nodes}
 
 Next, Goyal et al. described how they would aggregate the influence credit over the whole action log $\mathbb{L}$. Consider two nodes $v$ and $u$: the total influence credit given to $v$ by $u$ for all actions in $A$, is simply obtained by taking the total credit over all actions and normalizing it by the number of actions performed by $u$ (denoted $A_u$). This is justified by the fact that credits are assigned by $u$ backward to its potential influencers. In their paper \cite{goyal:datainfluence}, Goyal et al. defined the following formulas:
 
@@ -183,6 +184,46 @@ Next, Goyal et al. described how they would aggregate the influence credit over 
 \end{equation}
 
 This is the objective function that the algorithms in \cite{goyal:datainfluence} attempt to maximize. We will be comparing the seed sets and the influence credits obtained by various datasets, described in the next chapter.
+
+\subsection{Algorithms}
+In this section, we present the algorithms which are proposed by Goyal et al  \cite{goyal:datainfluence}. Some key points in those algorithms have been strictly proved or derived by them, and for the sake of concision we juts show the proof results in the end of this section.
+
+Initially, we scan the action log $\mathbb{L}$ and then, we use the greedy algorithm with CELF optimization to select the seed set. While scanning the action log, we maintain all the information needed to select $k$ seeds later. In particular, we compute total credit given to each node $v$ for influencing any other node $u$ for all actions $a$ and record it into the data structure \textit{UC} (User Credits). Each entry \textit{UC}[v][u][a] corresponds to $\Gamma_{v,u}^{V-S}(a)$, that is, total credit given to $v$ for activating $u$ on the graph induced by $V − S$ where $S$ is the current seed set. We also maintain another data structure \textit{SC }(Set Credits) where each entry \textit{SC}[x][a] refers to the total credit given to the current seed set $S$ by a node $x$ for an action $a$, that is, $\Gamma_{S,x}(a)$. Since $S$ is empty in the beginning, $SC$ is not used in the first iteration.
+
+\begin{figure}
+	\includegraphics[scale=0.4]{al2.png}
+	\centering
+	\label{al2}
+\end{figure}
+
+Algorithm 2 describes the first step of our method that scans $\mathbb{L}$. $\mathbb{L}$ is maintained sorted, first by action and then by time. It processes one action at a time and in chronological order. We use \textit{\textbf{current\_table} }to maintain the list of users who have performed the current action and have been seen so far, and $A_u$ to denote the number of actions performed by user $u$ in $\mathbb{L}$, and\textbf{ \textit{Parents(u)} }for the list of parents of each user $u$ with respect to the current action $a$, that is, $N_{in}(u, a)$. For each action $a$ and for each user $u$ that performs it, we scan \textbf{\textit{current\_table}} to find its neighbors that already performed a and add them to the list of parents of $u$. Then for each parent $v$ of $u$, we compute the direct credit $\gamma_{v,u}(a)$ appropriately (line 9). For the ease of exposition, here we assume the simple definition $\gamma_{v,u}(a = 1/N_{in}(u,a)$, that can be implemented as $\gamma = 1/|Parents(u)|$, we need to learn the parameters $\tau_{v,u}$ for all edges and \textit{\textbf{infl(u)}} for all nodes in advance and pass them on to Algorithm 2 as input, similarly to what the standard method does for influence probabilities. The total credit given to various nodes for influencing $u$ is then computed using equation 5 (lines 10-13). For the sake of reducing memory requirements, we use a truncation threshold $\lambda$ and discard credits that are below the threshold. In the experiments we will assess the effect of this truncation.
+\begin{figure}
+	\includegraphics[scale=0.4]{al3.png}
+	\centering
+	\label{al3}
+\end{figure}
+
+Once the first phase is completed, we use the standard greedy algorithm with the CELF optimization \cite{leskovec2007cost} to select the seeds (Algorithm 3). The algorithm maintains a queue $Q$ where an entry for a user $x$ is stored in the form $\left\langle x, mg, it\right\rangle$ , where mg represents the marginal gain of user $x$ with respect to seed set in iteration it. $Q$ is always kept sorted in decreasing order of $mg$. Initially, the influence spread of each node is computed and $Q$ is built (lines 2-3). In each iteration, the top element $x$ of $Q$ is analyzed. If $x$ is analyzed before in the current iteration (that is, $x.it = |S|$), then it is picked as the next seed node and the subroutine update is called (line 6). On the other hand, if $x.it < |S|$, we recompute the marginal gain of $x$ with respect to $S$ by calling the subroutine \textit{computeMG} (line 8). Then $x.it$ is set appropriately and $x$ is re-inserted into $Q$ (line 9).
+\begin{figure}
+	\includegraphics[scale=0.5]{al45.png}
+	\centering
+	\label{al45}
+\end{figure}
+
+Algorithm 4 computes the marginal gain of a node $x$ with respect to the current seed set $S$. It leverages Theorem 3 to do this efficiently. For an action $a$, lines 3-5 compute the term   $\sum_{u \in V} \frac{1}{A_u} \cdot \Gamma_{x,u}^{V-S}(a)$ and line 6 multiplies it by the $1-\Gamma_{S,x}(a)$. Finally, whenever a user $x$ is added to the seed set, the subroutine update is invoked and Algorithm 5 updates both \textit{UC} and \textit{SC}, using Lemma 2 and 3.
+
+\subsection*{Results of Proof and Deduction}
+\begin{lem}
+	$\Gamma_{v,u}^{W-x}(a) = \Gamma_{v,u}^W(a) - \Gamma_{v,x}^W(a) \cdot \Gamma_{x,u}^W(a)$
+\end{lem}
+\begin{lem}
+	$\Gamma_{v,u}^{W-x}(a) = \Gamma_{v,u}^W (a) - \Gamma_{v,x}^W(a)\cdot\Gamma_{x,u}^W(a)$
+\end{lem}
+\begin{lem}
+	$\Gamma_{S+x,u}(a) = \Gamma_{S,u}(a) - \Gamma_{x,u}^{V-S}(a) \cdot (1 - \Gamma_{S,x}(a) )$
+\end{lem}
+
+
 
 \section{Datasets}
 
@@ -215,6 +256,9 @@ In order to find out which types of graphs are the most suitable for the credit 
 \section{Experiments and results}
 \textbf{TODO: Compare the performance of the credit distribution model with the different datasets}
 
+\subsection*{Spread Achieved}
+In this experiments, we compare the influence spread achieved by the seed sets obtained from CD model, among the four real social networks along with user activities logs. Considering the differences among those datasets in nature, we first compare Flixster and Flickr and then add Digg and Twitter.
+
 First, we'll compare Flickr and Flixster in  ~\ref{spread2}. As we can see from the Flickr results, we barely managed any significant spread. The achieved number of activated nodes is about the same as the number of nodes in our seed set. This indicates that the action of marking a photo as a favourite does not propagate to friends. This might be due to the user interface. Photos favorited by friends do not become more prominent in the news feed, so these actions go unnoticed and do not affect the behaviour of friends. In the flixter data, each rating propagated to around 1 friend on average, which results in a score approximately two times higher than Flickr's.
 
 \begin{figure}[h]
@@ -242,7 +286,9 @@ While scanning the Twitter network, we saw noticable jumps in the overall influe
     \caption{Achieved spread of all 4 networks}
 \end{figure}
 
+\subsection*{Accuracy of Spread Prediction}
 
+Figure \ref{accuracy} shows an intuitive difference among four real social networks along with user action logs. On one hand, actual spread under both Digg and Twitter datasets is further and wider than that under Fixster and Flickr. On the other hands, the relative prediction error of CD model under Digg is obviously less than those under the other three datasets.
 
 \begin{figure}[h]
 	\includegraphics[width=\linewidth]{accuracy.png}
