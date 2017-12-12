@@ -102,7 +102,7 @@ Social graphs are growing at such a rate, that the early methods of finding seed
 
 \section{Related and previous work}
 
-In all of the research we have studied, the optimization problems have been focused on finding an initial set of “seed” nodes which would maximize the influenceability through a network. \\
+In all of the research we have studied, the optimization problems have been focused on finding an initial set of “seed” nodes which would maximize the influenceability through a network. 
 
 In 2003, a time before Facebook and Twitter, Kempe et al. \cite{kempe:maxspread}, suggested probabilistic simulation oriented approaches to select an initial set of seed nodes to maximize spread and cause a cascade effect through a network. They compared their novel techniques with older models and proved with various experiments that their methods outperform those which were based on classic graph measures such as degree centrality and distance centrality. Their focus was on Independent Cascade and Linear Threshold Models.In both, at a given time, each node can be either active or inactive. Each node's tendency to become active increases monotonically as more of its neighbors become active, and an active node never becomes inactive again. Time unfolds in discrete steps.
 
@@ -141,17 +141,19 @@ Our contribution will be to compare the performance of the credit distribution m
 
 \textit{Our problem statement} can be defined as follows.
 
-\textsf{Problem 2 (Influence Maximization for multiple graphs)}.\textit{Given a set of directed and edge-weighted social graphs \\ $ \mathbb{G} = \{(V_1, E_1, p),(V_2, E_2, p), ..., (V_n, E_n, p)\} $, a propagation model m, and a number $ k \leqslant |V| $, find a graph G and a set $S \subseteq V , |S| = k,$ such that $\sigma_{Gm}(S_G)$ is maximum.}
+\textsf{Problem 2 (Influence Maximization for multiple graphs)}.\textit{Given a set of directed and edge-weighted social graphs \\ $ \mathbb{G} = \{G_1(V_1, E_1,p_1), G_2(V_2, E_2, p_2),...,G_n(V_n, E_n,p_n) \} $, a propagation model m, and a number $ k \leqslant |V| $, find a graph G and a set $S \subseteq V , |S| = k,$ such that $\sigma_{Gm}(S_G)$ is maximum.}
 
 In our case the model $m$ is Credit Distribution. This is the model that Goyal et al proposed in their paper \cite{goyal:datainfluence}.
 
-\subsection{Credit distribution}
 
-The process starts with the (unweighted) social graph and a log of past action propagations that say when each user performed an action. If we take a social music streaming service as an example, the log might contain recorded actions such as listening to a song. If a user listens to a song, and his friend later listens to the same song, we can consider the action to have propagated from the first user to his friend. The log is used to estimate influence probabilities among the nodes. This produces a directed edge-weighted graph which is then given as input to a greddy algorithm which produces a seed set. We look at potential influencers for actions performed by each node and distribute credit between nodes who previously performed the same action. Nodes can influence other nodes indirectly. The total propagation score for a pair of nodes is the sum of direct and indirect influence scores.
 
 \section{Suggested Approach}
 
 We want to study the structure of various datasets to find out which characteristics are important for the CD model to be successful. We will compare the performance over multiple datasets and try to describe the attributes required for successful CD based influence spread. The datasets we are studying require different preprocessing approaches. One of our main challenges is the splitting of action logs $\mathbb{L}$ into meaningful training and test sets, in order to measure our accuracy in a meaningful manner. For credit distribution and spread prediction we are using the software provided in \cite{goyal:datainfluence} along with our own custom preprocessing scripts. After preprocessing, we use the previously mentioned software to select seed nodes, predict spread and compare with actual spread.
+
+\subsection{Credit distribution model}
+
+The process starts with the (unweighted) social graph and a log of past action propagations that say when each user performed an action. If we take a social music streaming service as an example, the log might contain recorded actions such as listening to a song. If a user listens to a song, and his friend later listens to the same song, we can consider the action to have propagated from the first user to his friend. The log is used to estimate influence probabilities among the nodes. This produces a directed edge-weighted graph which is then given as input to a greddy algorithm which produces a seed set. We look at potential influencers for actions performed by each node and distribute credit between nodes who previously performed the same action. Nodes can influence other nodes indirectly. The total propagation score for a pair of nodes is the sum of direct and indirect influence scores.
 
 The seed selection process is described in detail in \cite{goyal:datainfluence}. We will briefly summarize some of the the most relevant points here. For each action performed by a node \textit{u} in our action log $\mathbb{L}$, the algorithm distributes credit evenly between direct neighbours \textit{w} of \textit{u}, if they performed the same action before \textit{u}. It also distributes credit backwards to all \textit{predecessors} of \textit{u} in \textit{G} who also performed the same action. To calculate the final score for a pair they use the formula in figure ~\ref{CD-formula}. See notation in table ~\ref{notation2}.
 
@@ -254,7 +256,7 @@ Also, we convert each action log, which is crawled from associated websites duri
 \subsection*{Spread Achieved}
 In our experiments, we compare the influence spread achieved by the seed sets obtained with the CD model. We ran the CD algorithm on four real social networks along with user activity logs. Considering the differences among those datasets in nature, we first compare Flixster and Flickr and then add Digg and Twitter.
 
-First, we'll compare Flickr and Flixster in  ~\ref{spread2}. As we can see from the Flickr results, we barely managed any significant spread. The achieved number of activated nodes is about the same as the number of nodes in our seed set. This indicates that the action of marking a photo as a favourite does not propagate to friends. This might be due to the user interface. Photos favorited by friends do not become more prominent in the news feed, so these actions go unnoticed and do not affect the behaviour of friends. In the flixter data, each rating propagated to around 1 friend on average, which results in a score approximately two times higher than Flickr's.
+First, we'll compare Flickr and Flixster in Figure \ref{spread2}. As we can see from the Flickr results, we barely managed any significant spread. The achieved number of activated nodes is about the same as the number of nodes in our seed set. This indicates that the action of marking a photo as a favourite does not propagate to friends. This might be due to the user interface. Photos favorited by friends do not become more prominent in the news feed, so these actions go unnoticed and do not affect the behaviour of friends. In the flixter data, each rating propagated to around 1 friend on average, which results in a score approximately two times higher than Flickr's.
 
 \begin{figure}[h]
 	\includegraphics[width=\linewidth]{spread2.png}
@@ -263,7 +265,7 @@ First, we'll compare Flickr and Flixster in  ~\ref{spread2}. As we can see from 
 	\caption{Achieved spread by seed sets under CD model on Flickr \& Flixster}
 \end{figure}
 
-In ~\ref{spread3} we see the achieved spread of Digg compared to Flickr and Flixster. We can clearly see that action propagations are much stronger in the Digg network compared to the other two. Interestingly, the ratio of nodes and edges is similar in Digg and Flixster. While the Flixster graph is larger, the overal achieved spread is much lower. From this we can see that the size and sparsity of a network aren't the most significant factors to affect the performance of influence spread under the CD model. Digg actively promotes the action we are investigating, voting on stories. The title of the site is a reference to this particular action. The network is designed around this functionality. This active incentive combined with the friend list encourages the propagation of actions.
+In Figure \ref{spread3} we see the achieved spread of Digg compared to Flickr and Flixster. We can clearly see that action propagations are much stronger in the Digg network compared to the other two. Interestingly, the ratio of nodes and edges is similar in Digg and Flixster. While the Flixster graph is larger, the overal achieved spread is much lower. From this we can see that the size and sparsity of a network aren't the most significant factors to affect the performance of influence spread under the CD model. Digg actively promotes the action we are investigating, voting on stories. The title of the site is a reference to this particular action. The network is designed around this functionality. This active incentive combined with the friend list encourages the propagation of actions.
 
 \begin{figure}[h]
 	\includegraphics[width=\linewidth]{spread3.png}
@@ -282,8 +284,11 @@ While scanning the Twitter network, we saw noticable jumps in the overall influe
 \end{figure}
 
 \subsection*{Accuracy of Spread Prediction}
+In this experiment, we evaluate methods using CD model based on different datasets. Figure \ref{accuracy} shows the relative error in the spread predicted by CD model, as a function of actual spread for different datasets. Actual spread refers to the total number of users who did perform the action. Predicted spread represents the total number of users who eventually get activated by seed users selected by our methods under CD model.
 
-Figure \ref{accuracy} shows an intuitive difference among four real social networks along with user action logs. On one hand, actual spread under both Digg and Twitter datasets is further and wider than that under Fixster and Flickr. On the other hands, the relative prediction error of CD model under Digg is obviously less than those under the other three datasets.
+On one hand, actual spread under CD model based on both Digg and Twitter datasets is further and wider than that on Fixster and Flickr. Just as what we have explained in the previous experiment, Digg picked highly voted stories daily to feature on its front page using an exact promotion mechanism, and those stories are more likely to be propagated and voted in the next following days, so that actual spreads on Digg and Twitter are larger than the others. For Digg, we presume this is caused by the promotion algorithms that curate stories for users, showing trending and relevant data at all times. Users are more likely to react to currently relevant information. For Twitter, we assume this is becasue Twitter has infiltrated every aspect of our lives and people are prone to retweet some specific URLs either out of individual interest or out of a motivation of following the current trend.  
+
+On the other hands, the relative prediction error of CD model on Digg is obviously less than those on the other three datasets. The flicker and flixster networks don't seem reliable for our experiments. They both achieve a low spread score with a high relative error. The Digg network seems like our most reliable dataset. The overall relative error is low. Twitter achieves the highest spread, but there is an accuracy tradeoff, it is less predictable than the Digg network.
 
 \begin{figure}[h]
 	\includegraphics[width=\linewidth]{accuracy.png}
