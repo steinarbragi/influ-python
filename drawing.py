@@ -49,6 +49,23 @@ plt.xlabel("Seed set size")
 plt.ylabel("Influence spread achieved")
 plt.legend(handles=[flixster, flickr, digg, twitter])
 
+plt.figure(3)
+flixster, = plt.plot(seed_number_1, influence_sp_1, 'bo', label='Flixster')
+flickr, = plt.plot(seed_number_2, influence_sp_2, 'r*', label='Flickr')
+digg, = plt.plot(seed_number_3, influence_sp_3, 'gs', label='Digg')
+plt.xlabel("Seed set size")
+plt.ylabel("Influence spread achieved")
+plt.legend(handles=[flixster, flickr, digg])
+plt.savefig('spread_3.png')
+
+plt.figure(4)
+flixster, = plt.plot(seed_number_1, influence_sp_1, 'bo', label='Flixster')
+flickr, = plt.plot(seed_number_2, influence_sp_2, 'r*', label='Flickr')
+plt.xlabel("Seed set size")
+plt.ylabel("Influence spread achieved")
+plt.legend(handles=[flixster, flickr])
+plt.savefig('spread_2.png')
+
 #==============================================================================
 # accuracy of spread prediction
 #==============================================================================
