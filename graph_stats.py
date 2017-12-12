@@ -25,7 +25,7 @@ print(nx.number_of_nodes(flixster))
 print(nx.number_of_edges(flixster))
 
 # %% Flickr
-flickr=nx.read_edgelist("data/flickr-growth.txt", nodetype=int, create_using=nx.DiGraph())
+flickr=nx.read_edgelist("data/flickr-growth.txt", nodetype=int, data={('timestamp',str)}, create_using=nx.DiGraph())
 
 print(nx.number_of_nodes(flickr))
 print(nx.number_of_edges(flickr))
@@ -71,10 +71,9 @@ plt.savefig('data/degree-flixster.png')
 plt.show()
 
 
-# %% indegree
-indeg = G.in_degree()
-
-# %% Find top 20 users based on indeg, outdeg or centrality for example
-top20users = heapq.nlargest(20, indeg, key=indeg.get)
-for i in top20users:
-    print(i + ' & ' + str(indeg[i]) + "\\\\")
+# %% Degree loglog flickr
+plt.loglog(nx.degree_histogram(flickr))
+plt.xlabel('degrees')
+plt.ylabel('occurrence')
+plt.savefig('data/degree-flickr.png')
+plt.show()
