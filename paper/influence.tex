@@ -136,7 +136,7 @@ Our main goal, like others before us is to find a $k$ set of seed nodes $S$ that
 
 The process starts with the (unweighted) social graph and a log of past action propagations that say when each user performed an action. If we take a social music streaming service as an example, the log might contain recorded actions such as listening to a song. If a user listens to a song, and his friend later listens to the same song, we can consider the action to have propagated from the first user to his friend. The log is used to estimate influence probabilities among the nodes. This produces the directed edge-weighted graph which is then given as input to the greedy algorithm which produces the seed set. They look at potential influencers for actions performed by each node and distribute credit evenly between nodes who previously performed the same action. Nodes can influence other nodes indirectly. The total propagation score for a pair of nodes is the sum of direct and indirect influence scores.
 
-\section{Suggested Approaches}
+\section{Suggested Approaches and Algorithms}
 
 We want to study the structure of various datasets to find out which characteristics are important for the CD model to be successful. We will compare the performance over multiple datasets and try to describe the attributes required for successful CD based influence spread. The datasets we are studying require different preprocessing approaches. One of our main challenges is the splitting of action logs $\mathbb{L}$ into meaningful training and test sets, in order to measure our accuracy in a meaningful manner. For credit distribution and spread prediction we are using the software provided in \cite{goyal:datainfluence} along with our own custom preprocessing scripts. After preprocessing, we use the previously mentioned software to select seed nodes, predict spread and compare with actual spread.
 
@@ -185,43 +185,7 @@ Next, Goyal et al. described how they would aggregate the influence credit over 
 
 This is the objective function that the algorithms in \cite{goyal:datainfluence} attempt to maximize. We will be comparing the seed sets and the influence credits obtained by various datasets, described in the next chapter.
 
-\subsection{Algorithms}
-In this section, we present the algorithms which are proposed by Goyal et al  \cite{goyal:datainfluence}. Some key points in those algorithms have been strictly proved or derived by them, and for the sake of concision we juts show the proof results in the end of this section.
-
-Initially, we scan the action log $\mathbb{L}$ and then, we use the greedy algorithm with CELF optimization to select the seed set. While scanning the action log, we maintain all the information needed to select $k$ seeds later. In particular, we compute total credit given to each node $v$ for influencing any other node $u$ for all actions $a$ and record it into the data structure \textit{UC} (User Credits). Each entry \textit{UC}[v][u][a] corresponds to $\Gamma_{v,u}^{V-S}(a)$, that is, total credit given to $v$ for activating $u$ on the graph induced by $V − S$ where $S$ is the current seed set. We also maintain another data structure \textit{SC }(Set Credits) where each entry \textit{SC}[x][a] refers to the total credit given to the current seed set $S$ by a node $x$ for an action $a$, that is, $\Gamma_{S,x}(a)$. Since $S$ is empty in the beginning, $SC$ is not used in the first iteration.
-
-\begin{figure}
-	\includegraphics[scale=0.4]{al2.png}
-	\centering
-	\label{al2}
-\end{figure}
-
-Algorithm 2 describes the first step of our method that scans $\mathbb{L}$. $\mathbb{L}$ is maintained sorted, first by action and then by time. It processes one action at a time and in chronological order. We use \textit{\textbf{current\_table} }to maintain the list of users who have performed the current action and have been seen so far, and $A_u$ to denote the number of actions performed by user $u$ in $\mathbb{L}$, and\textbf{ \textit{Parents(u)} }for the list of parents of each user $u$ with respect to the current action $a$, that is, $N_{in}(u, a)$. For each action $a$ and for each user $u$ that performs it, we scan \textbf{\textit{current\_table}} to find its neighbors that already performed a and add them to the list of parents of $u$. Then for each parent $v$ of $u$, we compute the direct credit $\gamma_{v,u}(a)$ appropriately (line 9). For the ease of exposition, here we assume the simple definition $\gamma_{v,u}(a = 1/N_{in}(u,a)$, that can be implemented as $\gamma = 1/|Parents(u)|$, we need to learn the parameters $\tau_{v,u}$ for all edges and \textit{\textbf{infl(u)}} for all nodes in advance and pass them on to Algorithm 2 as input, similarly to what the standard method does for influence probabilities. The total credit given to various nodes for influencing $u$ is then computed using equation 5 (lines 10-13). For the sake of reducing memory requirements, we use a truncation threshold $\lambda$ and discard credits that are below the threshold. In the experiments we will assess the effect of this truncation.
-\begin{figure}
-	\includegraphics[scale=0.4]{al3.png}
-	\centering
-	\label{al3}
-\end{figure}
-
-Once the first phase is completed, we use the standard greedy algorithm with the CELF optimization \cite{leskovec2007cost} to select the seeds (Algorithm 3). The algorithm maintains a queue $Q$ where an entry for a user $x$ is stored in the form $\left\langle x, mg, it\right\rangle$ , where mg represents the marginal gain of user $x$ with respect to seed set in iteration it. $Q$ is always kept sorted in decreasing order of $mg$. Initially, the influence spread of each node is computed and $Q$ is built (lines 2-3). In each iteration, the top element $x$ of $Q$ is analyzed. If $x$ is analyzed before in the current iteration (that is, $x.it = |S|$), then it is picked as the next seed node and the subroutine update is called (line 6). On the other hand, if $x.it < |S|$, we recompute the marginal gain of $x$ with respect to $S$ by calling the subroutine \textit{computeMG} (line 8). Then $x.it$ is set appropriately and $x$ is re-inserted into $Q$ (line 9).
-\begin{figure}
-	\includegraphics[scale=0.5]{al45.png}
-	\centering
-	\label{al45}
-\end{figure}
-
-Algorithm 4 computes the marginal gain of a node $x$ with respect to the current seed set $S$. It leverages Theorem 3 to do this efficiently. For an action $a$, lines 3-5 compute the term   $\sum_{u \in V} \frac{1}{A_u} \cdot \Gamma_{x,u}^{V-S}(a)$ and line 6 multiplies it by the $1-\Gamma_{S,x}(a)$. Finally, whenever a user $x$ is added to the seed set, the subroutine update is invoked and Algorithm 5 updates both \textit{UC} and \textit{SC}, using Lemma 2 and 3.
-
-\subsection*{Results of Proof and Deduction}
-\begin{lem}
-	$\Gamma_{v,u}^{W-x}(a) = \Gamma_{v,u}^W(a) - \Gamma_{v,x}^W(a) \cdot \Gamma_{x,u}^W(a)$
-\end{lem}
-\begin{lem}
-	$\Gamma_{v,u}^{W-x}(a) = \Gamma_{v,u}^W (a) - \Gamma_{v,x}^W(a)\cdot\Gamma_{x,u}^W(a)$
-\end{lem}
-\begin{lem}
-	$\Gamma_{S+x,u}(a) = \Gamma_{S,u}(a) - \Gamma_{x,u}^{V-S}(a) \cdot (1 - \Gamma_{S,x}(a) )$
-\end{lem}
+\subsection{Preprocess}
 
 
 
