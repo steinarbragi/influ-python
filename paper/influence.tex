@@ -262,25 +262,25 @@ In this experiments, we compare the influence spread achieved by the seed sets o
 First, we'll compare Flickr and Flixster in  ~\ref{spread2}. As we can see from the Flickr results, we barely managed any significant spread. The achieved number of activated nodes is about the same as the number of nodes in our seed set. This indicates that the action of marking a photo as a favourite does not propagate to friends. This might be due to the user interface. Photos favorited by friends do not become more prominent in the news feed, so these actions go unnoticed and do not affect the behaviour of friends. In the flixter data, each rating propagated to around 1 friend on average, which results in a score approximately two times higher than Flickr's.
 
 \begin{figure}[h]
-	\includegraphics[width=\linewidth]{spread_2.png}
+	\includegraphics[width=\linewidth]{spread2.png}
 	\centering
 	\label{spread2}
-	\caption{Achieved spread of Flickr \& Flixster}
+	\caption{Achieved spread by seed sets under CD model on Flickr \& Flixster}
 \end{figure}
 
 In ~\ref{spread3} we see the achieved spread of Digg compared to Flickr and Flixster. We can clearly see that action propagations are much stronger in the Digg network compared to the other two.
 
 \begin{figure}[h]
-	\includegraphics[width=\linewidth]{spread_3.png}
+	\includegraphics[width=\linewidth]{spread3.png}
 	\centering
 	\label{spread3}
-    \caption{Achieved spread of Digg, Flickr \& Flixster}
+    \caption{Achieved spread by seed sets under CD model on Digg, Flickr \& Flixster}
 \end{figure}
 
 While scanning the Twitter network, we saw noticable jumps in the overall influence spread score along the way. These jumps denote highly influencial nodes being detected, pulling the overall score up significantly. We also notice that Twitter is an even better fit than Digg for influence maximization. We suspect this might be due to the design of the frontpage. The primary purpose of Twitter's social network is to connect with and spread information to followers. The website revolves around the activity of posting bite size pieces of information and resharing interesting tweets.
 
 \begin{figure}[h]
-	\includegraphics[width=\linewidth]{spread_achieved.png}
+	\includegraphics[width=\linewidth]{spread4.png}
 	\centering
 	\label{spreadall}
     \caption{Achieved spread of all 4 networks}
@@ -294,7 +294,7 @@ Figure \ref{accuracy} shows an intuitive difference among four real social netwo
 	\includegraphics[width=\linewidth]{accuracy.png}
 	\centering
 	\label{accuracy}
-    \caption{Accuracy of all 4 networks}
+    \caption{Prediction accuracy on all 4 datasets}
 \end{figure}
 
 
